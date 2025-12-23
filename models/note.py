@@ -7,4 +7,7 @@ class Note(db.Model):
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    user = db.relationship('User', backref=db.backref('notes', lazy=True))
+
+
+    def __repr__(self):
+       return f"<note id={self.id}, email={self.email}>"

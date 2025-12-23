@@ -1,16 +1,20 @@
+import os
 from flask import Flask, redirect, render_template, request, url_for
+from flask_migrate import Migrate
+from controllers.user_controller import UserControllers
 from models import db
 from models.user import User
 from models.note import Note
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key= os.getenv('APP_SECRET_KEY')
 
-db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+app.config['SQLALCHEMY_DATABSE_URI']=db_config
+db.innit_app(app)
+
+migrate=Migrate(app,db)
+UserController= UserControllers()
 
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
@@ -24,8 +28,6 @@ def register():
         email = request.form['email']
         password = request.form['password']
         register_user = User(name=name, email=email, password=password)
-        db.session.add(register_user)
-        db.session.commit()
         return redirect(url_for('dashboard'))
     return render_template('register.html')
 

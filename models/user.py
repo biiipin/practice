@@ -8,3 +8,5 @@ class User(db.Model):
     password=db.Column(db.String(50), nullable=False)
     created_at=db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at=db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    def __repr__(self):
+        return f"<User id={self.id}, email={self.email}>"

@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    cap_add: # suppresses  not useful error messages.
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=todo
+      - MYSQL_ROOT_PASSWORD=2062
+    ports:
+      - '3307:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - webapp
+
+  # webapp:
+  #   container_name: webapp
+  #   image: webapp:1.0.0
+  #   ports:
+  #     - 4000:4000
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   networks:
+  #     - webapp
+  #   env_file:
+  #     - .env
+  #   restart: unless-stopped
+  
+networks:
+  webapp:
+    driver: bridge
+volumes:
+  db:
+    driver: local
