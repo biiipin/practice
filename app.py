@@ -1,6 +1,7 @@
 import os
 from flask import Flask, redirect, render_template, request, url_for
 from flask_migrate import Migrate
+from controllers.note_controller import NoteController
 from controllers.user_controller import UserControllers
 from models.db import db, db_config
 
@@ -11,7 +12,6 @@ app.secret_key= os.getenv('APP_SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI']=db_config
 db.init_app(app)
 
-notes=[]
 
 migrate=Migrate(app,db)
 UserController= UserControllers()
@@ -19,7 +19,7 @@ UserController= UserControllers()
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    recent_notes=notes[-3:0]
+    recent_notes= NoteController.notes[-3]
     return render_template('home.html',notes=recent_notes)
 
 @app.route('/addnote', methods=['GET'])
