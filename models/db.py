@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
@@ -11,9 +11,9 @@ DB_NAME=os.getenv('DB_NAME')
 DB_URL=os.getenv('DB_URL')
 
 
-db_config=f'mysql+pymysql://{DB_USERNAME}: {DB_PASSWORD} @ {DB_URL}:3307//{DB_NAME}'
+db_config= f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_URL}:3307/{DB_NAME}"
 
 class Base(DeclarativeBase):
-    pass
+  pass
 
-db=SQLAlchemy(model_class=Base)
+db=SQLAlchemy()

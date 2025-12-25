@@ -2,16 +2,16 @@ import os
 from flask import Flask, redirect, render_template, request, url_for
 from flask_migrate import Migrate
 from controllers.user_controller import UserControllers
-from models import db
-from models.user import User
-from models.note import Note
+from models.db import db, db_config
 
 app = Flask(__name__)
 app.secret_key= os.getenv('APP_SECRET_KEY')
 
 
-app.config['SQLALCHEMY_DATABSE_URI']=db_config
-db.innit_app(app)
+app.config['SQLALCHEMY_DATABASE_URI']=db_config
+db.init_app(app)
+
+notes=[]
 
 migrate=Migrate(app,db)
 UserController= UserControllers()
@@ -19,50 +19,35 @@ UserController= UserControllers()
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template('home.html')
+    recent_notes=notes[-3:0]
+    return render_template('home.html',notes=recent_notes)
 
-@app.route('/register', methods=['GET','POST'])
+@app.route('/addnote', methods=['GET'])
+def add_note():
+    return render_template('add_note.html')
+
+@app.route('/seenotes', methods=['GET'])
+def see_notes():
+    return render_template('see_notes.html')
+
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        register_user = User(name=name, email=email, password=password)
-        return redirect(url_for('dashboard'))
-    return render_template('register.html')
-
-@app.route('/login', methods=['GET','POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = User.query.filter_by(email=email, password=password).first()
-        if user:
+        register_user = UserControllers().register({'name':name, 'email':email, 'password':password})
+        if register_user:
             return redirect(url_for('dashboard'))
-        return redirect(url_for('login'))
-    return render_template('login.html')
+        return redirect(url_for('signup'))
 
-@app.route('/dashboard', methods=['GET'])
-def dashboard():
-    notes = Note.query.filter_by(user_id=1).all()
-    return render_template('dashboard.html', notes=notes)
-
-@app.route('/add_note', methods=['POST'])
-def add_note():
-    title = request.form['title']
-    content = request.form['content']
-    new_note = Note(title=title, content=content, user_id=1)
-    db.session.add(new_note)
-    db.session.commit()
-    return redirect(url_for('dashboard'))
-
-@app.route('/delete_note/<int:note_id>')
-def delete_note(note_id):
-    note = Note.query.get(note_id)
-    if note:
-        db.session.delete(note)
-        db.session.commit()
-    return redirect(url_for('dashboard'))
+@app.route('/login', methods=['POST'])
+def login():
+    email=request.form['email']
+    password=request.form['password']
+    valid_user=UserControllers().login(email=email, password=password)
+    if valid_user:
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('signin'))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=4000, debug=True)
