@@ -7,9 +7,8 @@ class UserControllers:
 
     @staticmethod
     def login(email, password:str)->bool:
-        user = User.query.filter_by(email=email).first
+        user = User.query.filter_by(email=email).first()
         if user and user.password == password:
-            user['user_id']= user.id
             return True
         flash('Invalid Data', 'error')
         return False
@@ -17,7 +16,7 @@ class UserControllers:
     @staticmethod
     def register(user):
         try:
-            new_user=User(name=user['name'], email=user['email'], password=['password'])
+            new_user=User(name=user['name'], email=user['email'], password=user['password'])
             db.session.add(new_user)
             db.sesssion.commit()
             flash('signed in successfully')
