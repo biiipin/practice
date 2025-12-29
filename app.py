@@ -19,15 +19,19 @@ UserController= UserControllers()
 @app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
 def home():
-    recent_notes= NoteController.notes[-3]
-    return render_template('home.html',notes=recent_notes)
+   recent_notes = NoteController.get_recent_notes(limit=3)
+   return render_template('home.html', notes=recent_notes)
 
-@app.route('/addnote', methods=['POST'])
+@app.route('/addnote', methods=['GET'])
 def add_note():
-    data=request.form
-    NoteController.create_note(title=data.get('title'),
-                               content=data.get('content'))
     return render_template('add_note.html')
+
+@app.route('/addnote_form', methods=['POST'])
+def addnote_form():
+    title=request.form.get('title')
+    content=request.form.get('content')
+    NoteController.create_note(title=title, content=content) 
+    return redirect(url_for('home'))
 
 @app.route('/seenotes', methods=['GET'])
 def see_notes():

@@ -1,20 +1,18 @@
 {% extends "layout.html" %}
+
 {% block content %}
+<div class="container mt-5">
+    <h3 class="text-center mb-4">✨ Recent Notes</h3>
 
-<h4 class="text-center mb-3">Recent Notes</h4>
-
-{% if notes %}
-    {% for note in notes%}
-    <div class="task">
-        <span> {{note}} </span>
-    </div>
-    {% endfor %}
-
-{% else %}
-<p class="text-center text-muted">
-        No notes yet
-    </p>
-{% endif %} 
-
+    {% if notes %}
+        {% for note in notes %}
+            <div class="task mb-3 p-3 border rounded">
+                <strong>{{ note.title }}</strong>
+                <p>{{ note.content }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center text-muted">No notes yet</p>
+    {% endif %}
+</div>
 {% endblock %}
-

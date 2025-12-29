@@ -7,11 +7,12 @@ class NoteController:
     @staticmethod
     def list_note(page_number=1, per_page=10):
         try:
-            notes=Note.query.paginate(page=page_number,per_page=per_page)
-            return notes
+            notes = Note.query.order_by(Note.id.desc()).paginate(page=page_number, per_page=per_page)
+            return notes 
         except Exception as e:
             print(e)
-            return []
+            return None
+
         
     @staticmethod
     def create_note(title, content):

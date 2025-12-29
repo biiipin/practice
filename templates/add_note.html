@@ -8,7 +8,7 @@
             <div class="todo-card">
                 <h4 class="text-center mb-4">Add Note</h4>
 
-                <form method="POST">
+                <form method="POST" action="{{url_for('addnote_form')}}">
                     <div class="mb-3">
                         <label class="form-label">Title</label>
                         <input type="text" name="title" class="form-control" required>
