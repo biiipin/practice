@@ -22,8 +22,11 @@ def home():
     recent_notes= NoteController.notes[-3]
     return render_template('home.html',notes=recent_notes)
 
-@app.route('/addnote', methods=['GET'])
+@app.route('/addnote', methods=['POST'])
 def add_note():
+    data=request.form
+    NoteController.create_note(title=data.get('title'),
+                               content=data.get('content'))
     return render_template('add_note.html')
 
 @app.route('/seenotes', methods=['GET'])
