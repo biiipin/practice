@@ -3,7 +3,8 @@ from flask import Flask, redirect, render_template, request, url_for
 from flask_migrate import Migrate
 from controllers.note_controller import NoteController
 from controllers.user_controller import UserControllers
-from models.db import db, db_config
+from models import db
+from models.db import db_config
 
 app = Flask(__name__)
 app.secret_key= os.getenv('APP_SECRET_KEY')
